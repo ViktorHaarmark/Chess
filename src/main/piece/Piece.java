@@ -21,12 +21,9 @@ public class Piece {
 
     public Piece(int color, int col, int row) {
         this.color = color;
-        this.col = col;
-        this.row = row;
-        this.x = getX(col);
-        this.y = getY(row);
-        this.preCol = col;
-        this.preRow = row;
+        this.col = col; this.row = row;
+        this.x = getX(col); this.y = getY(row);
+        this.preCol = col; this.preRow = row;
     }
 
     public BufferedImage getImage(String imagePath) {

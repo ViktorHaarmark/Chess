@@ -9,14 +9,10 @@ public class King extends Piece {
         super(color, col, row);
         pieceType = PieceType.KING;
 
-        if (color == GamePanel.WHITE) {
-            image = getImage("/res/piece/white_king");
-        }
-        else {
-            image = getImage("/res/piece/black_king");
-        }
-        if(color == 0 && (row != 7 || col != 4) || color == 1 && (row != 0 || col != 4)) {
-            hasMoved = true;
+        switch(color) {
+            case GamePanel.WHITE: image = getImage("/res/piece/white_king"); if(row != 7 || col != 4) {hasMoved = true;} break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_king"); if(row != 0 || col != 4) {hasMoved = true;} break;
+            default: break;
         }
     }
 

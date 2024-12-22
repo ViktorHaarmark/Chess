@@ -8,16 +8,11 @@ public class Rook extends Piece {
         super(color, col, row);
         pieceType = PieceType.ROOK;
 
-        if (color == GamePanel.WHITE) {
-            image = getImage("/res/piece/white_rook");
-        }
-        else {
-            image = getImage("/res/piece/black_rook");
-        }
-
-        if((color == GamePanel.WHITE && (row != 7 || col%7 != 0)) || (color == 1 && (row != 0 || col%7 != 0))) {
-            hasMoved = true;
-        }
+        switch(color) {
+            case GamePanel.WHITE: image = getImage("/res/piece/white_rook"); if (row != 7 || col%7 != 0) {hasMoved = true;} break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_rook"); if (row != 0 || col%7 != 0) {hasMoved = true;} break;
+            default: break;
+            }
     }
 
     @Override

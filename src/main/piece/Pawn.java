@@ -10,16 +10,11 @@ public class Pawn extends Piece {
         super(color, col, row);
         pieceType = PieceType.PAWN;
 
-        if (color == GamePanel.WHITE) {
-            image = getImage("/res/piece/white_pawn");
-            moveDirection = 1;
-        } else {
-            image = getImage("/res/piece/black_pawn");
-            moveDirection = -1;
-        }
-        if(color == GamePanel.WHITE && (row != 6 ) || color == GamePanel.BLACK && ((row != 1))) {
-            hasMoved = true;
-        }
+        switch(color) {
+            case GamePanel.WHITE: image = getImage("/res/piece/white_pawn"); moveDirection = 1; if(row!= 6) {hasMoved = true;} break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_pawn"); moveDirection = -1; if(row!= 1) {hasMoved = true;}break;
+            default: break;
+            }
     }
 
     @Override

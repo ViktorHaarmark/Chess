@@ -7,14 +7,12 @@ public class Bishop extends Piece {
     public Bishop(int color, int col, int row) {
         super(color, col, row);
         pieceType = PieceType.BISHOP;
-
-        if (color == GamePanel.WHITE) {
-            image = getImage("/res/piece/white_bishop");
+        switch(color) {
+            case GamePanel.WHITE: image = getImage("/res/piece/white_bishop"); break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_bishop"); break;
+            default: break;
+            }
         }
-        else {
-            image = getImage("/res/piece/black_bishop");
-        }
-    }
 
     @Override
     public boolean canMove(int targetCol, int targetRow) {
@@ -37,10 +35,6 @@ public class Bishop extends Piece {
                 }
             }
         }
-
-
-
-
         return false;
     }
     

@@ -8,12 +8,11 @@ public class Queen extends Piece {
         super(color, col, row);
         pieceType = PieceType.QUEEN;
 
-        if (color == GamePanel.WHITE) {
-            image = getImage("/res/piece/white_queen");
-        }
-        else {
-            image = getImage("/res/piece/black_queen");
-        }
+        switch(color) {
+            case GamePanel.WHITE: image = getImage("/res/piece/white_queen"); break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_queen"); break;
+            default: break;
+            }
     }
 
     @Override

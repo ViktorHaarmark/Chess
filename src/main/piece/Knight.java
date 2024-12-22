@@ -7,13 +7,11 @@ public class Knight extends Piece {
     public Knight(int color, int col, int row) {
         super(color, col, row);
         pieceType = PieceType.KNIGHT;
-
-        if (color == GamePanel.WHITE) {
-            image = getImage("/res/piece/white_knight");
-        }
-        else {
-            image = getImage("/res/piece/black_knight");
-        }
+        switch(color) {
+            case GamePanel.WHITE: image = getImage("/res/piece/white_knight"); break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_knight"); break;
+            default: break;
+            }
     }
 
     public boolean canMove(int targetCol, int targetRow) {

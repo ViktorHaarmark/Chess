@@ -5,7 +5,6 @@ public class LastMove {
     public static PieceType pieceType;
 
     public LastMove() {
-  
     }
 
 
