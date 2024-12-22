@@ -16,7 +16,27 @@ public class Queen extends Piece {
         }
     }
 
+    @Override
     public boolean canMove(int targetCol, int targetRow) {
+        if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
+            // Rook move
+            if (targetCol == preCol || targetRow == preRow) {
+                if ( isValidSquare(targetCol, targetRow) && !pieceIsOnStraightLine(targetCol, targetRow)) {
+                    return true;
+                }
+            }
+            // bishop move
+            if (Math.abs(targetCol - preCol) == Math.abs(targetRow - preRow)) {
+                if ( isValidSquare(targetCol, targetRow) && !pieceIsOnDiagonalLine(targetCol, targetRow)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean controlSquare(int targetCol, int targetRow) {
         if (isWithinBoard(targetCol, targetRow) && isSameSquare(targetCol, targetRow) == false) {
             // Rook move
             if (targetCol == preCol || targetRow == preRow) {
@@ -26,7 +46,7 @@ public class Queen extends Piece {
             }
             // bishop move
             if (Math.abs(targetCol - preCol) == Math.abs(targetRow - preRow)) {
-                if ( isValidSquare(targetCol, targetRow) && !pieceIsOnDiagonalLine(targetCol, targetRow)) {
+                if ( !pieceIsOnDiagonalLine(targetCol, targetRow)) {
                     return true;
                 }
             }

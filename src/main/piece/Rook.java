@@ -20,10 +20,23 @@ public class Rook extends Piece {
         }
     }
 
+    @Override
     public boolean canMove(int targetCol, int targetRow) {
         if (isWithinBoard(targetCol, targetRow) && isSameSquare(targetCol, targetRow) == false) {
             if (targetCol == preCol || targetRow == preRow) {
                 if (isValidSquare(targetCol, targetRow) && !pieceIsOnStraightLine(targetCol, targetRow)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean controlSquare(int targetCol, int targetRow) {
+        if (isWithinBoard(targetCol, targetRow) && isSameSquare(targetCol, targetRow) == false) {
+            if (targetCol == preCol || targetRow == preRow) {
+                if ( !pieceIsOnStraightLine(targetCol, targetRow)) {
                     return true;
                 }
             }

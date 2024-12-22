@@ -21,12 +21,12 @@ public class King extends Piece {
     }
 
 
-    private boolean enemyPieceControlStraightLine(int targetCol, int targetRow) {
+    private boolean enemyPieceControlCastlingLine(int targetCol, int targetRow) {
 
         // When this piece moves left/right
         for (int c = Math.min(preCol, targetCol)+1; c < Math.max(preCol, targetCol); c++) {
             for(Piece piece : GamePanel.simPieces) {
-                if (piece.canMove(c, targetRow) && piece.color != color) {
+                if (piece.controlSquare(c, targetRow) && piece.color != color) {
                     return true;
                 }
             }
@@ -35,8 +35,7 @@ public class King extends Piece {
     }
 
     
-    @Override
-    protected boolean pieceIsOnStraightLine(int targetCol, int targetRow) {
+    private boolean pieceIsOnCastlingLine(int targetCol, int targetRow) {
 
         // When the king checks for castling, he does not consider himself in the way.
         for (int c = Math.min(preCol, targetCol)+1; c < Math.max(preCol, targetCol); c++) {
@@ -50,43 +49,54 @@ public class King extends Piece {
         return false;
     }
 
-public boolean canMove(int targetCol, int targetRow) {
-    if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
-        // Normal movement
-        if (Math.abs(targetCol - preCol) + Math.abs(targetRow - preRow) == 1 ||
+    @Override
+    public boolean canMove(int targetCol, int targetRow) {
+        if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
+            // Normal movement
+            if (Math.abs(targetCol - preCol) + Math.abs(targetRow - preRow) == 1 ||
                 Math.abs(targetCol - preCol) * Math.abs(targetRow - preRow) == 1) {
                     if (isValidSquare(targetCol, targetRow)) {
                         return true;
                     }
-                }
+            }
         
-        // Kingside castling
-        if (targetCol == preCol + 2 && targetRow == preRow && !pieceIsOnStraightLine(targetCol, targetRow)) {
-            if (!enemyPieceControlStraightLine(targetCol, targetRow)) {
-                for (Piece piece : GamePanel.simPieces) {
-                    if (piece.col == preCol + 3 && piece.row == preRow && !piece.hasMoved && piece.pieceType == PieceType.ROOK) {
-                        GamePanel.castlingP = piece;
-                        return true;
+            // Kingside castling
+            if (targetCol == preCol + 2 && targetRow == preRow && !pieceIsOnCastlingLine(targetCol, targetRow)) {
+                if (!enemyPieceControlCastlingLine(targetCol, targetRow)) {
+                    for (Piece piece : GamePanel.simPieces) {
+                        if (piece.col == preCol + 3 && piece.row == preRow && !piece.hasMoved && piece.pieceType == PieceType.ROOK) {
+                            GamePanel.castlingP = piece;
+                            return true;
+                        }
                     }
                 }
             }
-        }
 
-        // Queenside castling
-        if (targetCol == preCol - 2 && targetRow == preRow && !pieceIsOnStraightLine(targetCol-1, targetRow) ) {
-            if (!enemyPieceControlStraightLine(targetCol, targetRow) ) {
-                for (Piece piece : GamePanel.simPieces) {
-                    if (piece.col == 0 && piece.row == preRow && !piece.hasMoved && piece.pieceType == PieceType.ROOK) {
-                        GamePanel.castlingP = piece;
-                        return true;
+            // Queenside castling
+            if (targetCol == preCol - 2 && targetRow == preRow && !pieceIsOnCastlingLine(targetCol-1, targetRow) ) {
+                if (!enemyPieceControlCastlingLine(targetCol, targetRow) ) {
+                    for (Piece piece : GamePanel.simPieces) {
+                        if (piece.col == 0 && piece.row == preRow && !piece.hasMoved && piece.pieceType == PieceType.ROOK) {
+                            GamePanel.castlingP = piece;
+                            return true;
+                        }
                     }
-                }
 
+                }
             }
         }
-    }
-    
-
     return false;
-}
+    }
+
+    @Override
+    public boolean controlSquare(int targetCol, int targetRow) {
+        if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
+            if (Math.abs(targetCol - preCol) + Math.abs(targetRow - preRow) == 1 ||
+                Math.abs(targetCol - preCol) * Math.abs(targetRow - preRow) == 1) {
+                    return true;
+            }
+        }
+        return false;
+        
+    }
 }

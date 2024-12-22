@@ -16,15 +16,32 @@ public class Bishop extends Piece {
         }
     }
 
+    @Override
     public boolean canMove(int targetCol, int targetRow) {
         if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
             if (Math.abs(targetCol - preCol) == Math.abs(targetRow - preRow)) {
-                if ( isValidSquare(targetCol, targetRow) && !pieceIsOnDiagonalLine(targetCol, targetRow)) {
+                if ( (isValidSquare(targetCol, targetRow)) && !pieceIsOnDiagonalLine(targetCol, targetRow)) {
                     return true;
                 }
             }
         }
         return false;
     }
-    //&& !pieceIsOnDiagonalLine(targetCol, targetRow)
+
+    @Override
+    public boolean controlSquare(int targetCol, int targetRow) {
+        if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
+            if (Math.abs(targetCol - preCol) == Math.abs(targetRow - preRow)) {
+                if ( !pieceIsOnDiagonalLine(targetCol, targetRow)) {
+                    return true;
+                }
+            }
+        }
+
+
+
+
+        return false;
+    }
+    
 }

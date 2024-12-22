@@ -44,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable{
     boolean canMove;
     boolean validSquare;
     boolean promotion;
+    boolean checkmate;
     
     public static LastMove lastMove = new LastMove();
 
@@ -148,10 +149,10 @@ public class GamePanel extends JPanel implements Runnable{
             promoting();
         }
 
-        if (isCheckmate(currentColor)) {
+        if (checkmate) {
             System.out.println("checkmate!");
         }
-
+        
         else{
             if (mouse.pressed) {
                 if (activeP == null) {
@@ -233,6 +234,10 @@ public class GamePanel extends JPanel implements Runnable{
             promotion = true;
         }
 
+        if(isCheckmate(currentColor * (-1))) {
+            checkmate = true;
+        }
+
         else {
             changePlayer();
         }
@@ -271,7 +276,7 @@ public class GamePanel extends JPanel implements Runnable{
         for (Piece king : GamePanel.simPieces) {
             if (king.pieceType == PieceType.KING && king.color == color) {
                 for (Piece piece : GamePanel.simPieces) {
-                    if (piece.canMove(king.col, king.row)  && piece.color != king.color) {
+                    if (piece.controlSquare(king.col, king.row)  && piece.color != king.color) {
                         return true;
                     }
                 }
@@ -282,18 +287,25 @@ public class GamePanel extends JPanel implements Runnable{
 
     private boolean isCheckmate(int color) {
         if (isKingInCheck(color)) {
-            for (Piece piece : GamePanel.simPieces) {
+            for (Piece piece : GamePanel.pieces) {
                 if (piece.color == color) {
                     for (int c = 0; c < 8; c++) {
                         for (int r = 0; r<8; r++) {
                             if ((piece.canMove(c, r))) {
+                                // Simulate piece moving to that square
                                 piece.col = c; piece.row = r;
+                                if (piece.hittingP != null) {
+                                    simPieces.remove(piece.hittingP.getIndex());
+                                }
                                 if (!isKingInCheck(color)) {
-                                    System.out.println(c); System.out.println(r); System.out.println(piece.pieceType); 
+                                    piece.hittingP = null;
                                     piece.col = piece.preCol; piece.row = piece.preRow;
+                                    copyPieces(pieces, simPieces);
                                     return false;
                                 }
+                                piece.hittingP = null;
                                 piece.col = piece.preCol; piece.row = piece.preRow;
+                                copyPieces(pieces, simPieces); 
                             }
                         }
                     }
@@ -301,6 +313,10 @@ public class GamePanel extends JPanel implements Runnable{
             }
             return true;
         }
+        return false;
+    }
+
+    public boolean isStalemate() { //Missing implementation
         return false;
     }
 

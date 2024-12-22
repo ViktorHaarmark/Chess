@@ -5,14 +5,17 @@ import src.main.LastMove;
 import src.main.PieceType;
 
 public class Pawn extends Piece {
+    int moveDirection;
     public Pawn(int color, int col, int row) {
         super(color, col, row);
         pieceType = PieceType.PAWN;
 
         if (color == GamePanel.WHITE) {
             image = getImage("/res/piece/white_pawn");
+            moveDirection = 1;
         } else {
             image = getImage("/res/piece/black_pawn");
+            moveDirection = -1;
         }
         if(color == GamePanel.WHITE && (row != 6 ) || color == GamePanel.BLACK && ((row != 1))) {
             hasMoved = true;
@@ -30,7 +33,7 @@ public class Pawn extends Piece {
         }
         else {
             if (hittingP.color != this.color) {
-                if(Math.abs(targetCol-preCol) == 1 && Math.abs(targetRow - preRow) == 1) {
+                if(Math.abs(targetCol-preCol) == 1 && targetRow - preRow == moveDirection) {
                     return true;
                 }
             }
@@ -41,13 +44,11 @@ public class Pawn extends Piece {
         return false;
     }
 
+    @Override
     public boolean canMove(int targetCol, int targetRow) {
+
         if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
             // Movement
-            int moveDirection = -1;
-            if (color == GamePanel.WHITE) { //White pawns
-                moveDirection = 1;
-            }
             if (preRow - targetRow == moveDirection ||
                 preRow - targetRow == 2*moveDirection && !hasMoved) {
                 if (isValidSquare(targetCol, targetRow) && !pieceIsOnStraightLine(targetCol, targetRow)) {
@@ -65,12 +66,16 @@ public class Pawn extends Piece {
                     }
                 }
             }
-
-
-        }
-            
-            
+        }     
     return false;
+    }
+
+    @Override
+    public boolean controlSquare(int targetCol, int targetRow) {
+        if (Math.abs(targetCol - col) == 1 && targetRow == row - moveDirection) {
+            return true;
+        }
+        return false;
     }
 }
 

@@ -27,7 +27,6 @@ public class Piece {
         this.y = getY(row);
         this.preCol = col;
         this.preRow = row;
-        this.hasMoved = false;
     }
 
     public BufferedImage getImage(String imagePath) {
@@ -83,6 +82,10 @@ public class Piece {
         return false;
     }
 
+    public boolean controlSquare( int targetCol, int targetRow) {
+        return false;
+    }
+
     public boolean isWithinBoard(int targetCol, int targetRow) {
         if (targetCol >= 0 && targetCol <= 7 && targetRow >= 0 && targetRow <= 7) {
             return true; 
@@ -109,7 +112,7 @@ public class Piece {
 
     public boolean isValidSquare(int targetCol, int targetRow) {
         hittingP = getHittingP(targetCol, targetRow);
-
+    
         if (hittingP == null) {
             return true;
         }
@@ -149,7 +152,6 @@ public class Piece {
 
     protected boolean pieceIsOnDiagonalLine(int targetCol, int targetRow) {
 
-        
        if (targetRow < preRow) {
         // Up left
         for (int c = preCol - 1; c > targetCol; c--) {
