@@ -24,6 +24,7 @@ public class Pawn extends Piece {
 
     @Override
     public boolean isValidSquare(int targetCol, int targetRow) {
+
         hittingP = getHittingP(targetCol, targetRow);
 
         if (hittingP == null) {
@@ -33,7 +34,7 @@ public class Pawn extends Piece {
         }
         else {
             if (hittingP.color != this.color) {
-                if(Math.abs(targetCol-preCol) == 1 && targetRow - preRow == moveDirection) {
+                if(Math.abs(targetCol-preCol) == 1 && targetRow == preRow - moveDirection) {
                     return true;
                 }
             }
@@ -72,7 +73,7 @@ public class Pawn extends Piece {
 
     @Override
     public boolean controlSquare(int targetCol, int targetRow) {
-        if (Math.abs(targetCol - col) == 1 && targetRow == row - moveDirection) {
+        if (Math.abs(targetCol - preCol) == 1 && targetRow == preRow - moveDirection) {
             return true;
         }
         return false;
