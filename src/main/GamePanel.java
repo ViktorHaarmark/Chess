@@ -45,6 +45,7 @@ public class GamePanel extends JPanel implements Runnable{
     boolean validSquare;
     boolean promotion;
     boolean checkmate;
+    boolean draw;
     
     public static LastMove lastMove = new LastMove();
 
@@ -55,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable{
         addMouseMotionListener(mouse);
         addMouseListener(mouse);
 
-        setPieces();
+        setPiecesCheckmate();
         copyPieces(pieces, simPieces);
     }
 
@@ -164,6 +165,10 @@ public class GamePanel extends JPanel implements Runnable{
         if (checkmate) {
             System.out.println("checkmate!");
         }
+
+        if (draw) {
+            System.out.println("Draw");
+        }
         
         else{
             if (mouse.pressed) {
@@ -250,6 +255,10 @@ public class GamePanel extends JPanel implements Runnable{
             checkmate = true;
         }
 
+        if(isStalemate(currentColor * (-1))) {
+            draw = true;
+        }
+
         else {
             changePlayer();
         }
@@ -299,36 +308,48 @@ public class GamePanel extends JPanel implements Runnable{
 
     private boolean isCheckmate(int color) {
         if (isKingInCheck(color)) {
-            for (Piece piece : GamePanel.pieces) {
-                if (piece.color == color) {
-                    for (int c = 0; c < 8; c++) {
-                        for (int r = 0; r<8; r++) {
-                            if ((piece.canMove(c, r))) {
-                                // Simulate piece moving to that square
-                                piece.col = c; piece.row = r;
-                                if (piece.hittingP != null) {
-                                    simPieces.remove(piece.hittingP.getIndex());
-                                }
-                                if (!isKingInCheck(color)) {
-                                    piece.hittingP = null;
-                                    piece.col = piece.preCol; piece.row = piece.preRow;
-                                    copyPieces(pieces, simPieces);
-                                    return false;
-                                }
-                                piece.hittingP = null;
-                                piece.col = piece.preCol; piece.row = piece.preRow;
-                                copyPieces(pieces, simPieces); 
-                            }
-                        }
-                    }
-                }
+            if (!isLegalMovePossible(color)) {
+                return true;
             }
-            return true;
         }
         return false;
     }
 
-    public boolean isStalemate() { //Missing implementation
+
+    public boolean isStalemate(int color) { //Missing implementation
+        if (!isKingInCheck(color)) {
+            if (!isLegalMovePossible(color)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isLegalMovePossible(int color) {
+        for (Piece piece : GamePanel.pieces) {
+            if (piece.color == color) {
+                for (int c = 0; c < 8; c++) {
+                    for (int r = 0; r<8; r++) {
+                        if ((piece.canMove(c, r))) {
+                            // Simulate piece moving to that square
+                            piece.col = c; piece.row = r;
+                            if (piece.hittingP != null) {
+                                simPieces.remove(piece.hittingP.getIndex());
+                            }
+                            if (!isKingInCheck(color)) {
+                                piece.hittingP = null;
+                                piece.col = piece.preCol; piece.row = piece.preRow;
+                                copyPieces(pieces, simPieces);
+                                return true;
+                            }
+                            piece.hittingP = null;
+                            piece.col = piece.preCol; piece.row = piece.preRow;
+                            copyPieces(pieces, simPieces); 
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
