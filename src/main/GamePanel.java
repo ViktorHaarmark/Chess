@@ -113,6 +113,18 @@ public class GamePanel extends JPanel implements Runnable{
         pieces.add(new King(BLACK, 2, 7));
 
     }
+
+    public void setPiecesTestCastling() {
+        pieces.add(new King(WHITE, 4, 7));
+        pieces.add(new King(BLACK, 4, 0));
+        pieces.add(new Rook(BLACK, 0, 0));
+        pieces.add(new Rook(BLACK, 7, 0));
+        pieces.add(new Rook(BLACK, 4, 0));
+        pieces.add(new Rook(WHITE, 0, 7));
+        pieces.add(new Rook(WHITE, 7, 7));
+
+    }
+
     private void copyPieces(ArrayList<Piece> source, ArrayList<Piece> target) {
         target.clear();
         for (int i = 0; i < source.size(); i++) {

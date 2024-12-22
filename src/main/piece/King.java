@@ -22,7 +22,6 @@ public class King extends Piece {
 
 
     private boolean enemyPieceControlCastlingLine(int targetCol, int targetRow) {
-
         // When this piece moves left/right
         for (int c = Math.min(preCol, targetCol)+1; c < Math.max(preCol, targetCol); c++) {
             for(Piece piece : GamePanel.simPieces) {
@@ -36,7 +35,6 @@ public class King extends Piece {
 
     
     private boolean pieceIsOnCastlingLine(int targetCol, int targetRow) {
-
         // When the king checks for castling, he does not consider himself in the way.
         for (int c = Math.min(preCol, targetCol)+1; c < Math.max(preCol, targetCol); c++) {
             for(Piece piece : GamePanel.pieces) {
@@ -61,7 +59,7 @@ public class King extends Piece {
             }
         
             // Kingside castling
-            if (targetCol == preCol + 2 && targetRow == preRow && !pieceIsOnCastlingLine(targetCol, targetRow)) {
+            if (targetCol == preCol + 2 && targetRow == preRow && !pieceIsOnCastlingLine(7, targetRow)) {
                 if (!enemyPieceControlCastlingLine(targetCol, targetRow)) {
                     for (Piece piece : GamePanel.simPieces) {
                         if (piece.col == preCol + 3 && piece.row == preRow && !piece.hasMoved && piece.pieceType == PieceType.ROOK) {
@@ -73,7 +71,7 @@ public class King extends Piece {
             }
 
             // Queenside castling
-            if (targetCol == preCol - 2 && targetRow == preRow && !pieceIsOnCastlingLine(targetCol-1, targetRow) ) {
+            if (targetCol == preCol - 2 && targetRow == preRow && !pieceIsOnCastlingLine(0, targetRow) ) {
                 if (!enemyPieceControlCastlingLine(targetCol, targetRow) ) {
                     for (Piece piece : GamePanel.simPieces) {
                         if (piece.col == 0 && piece.row == preRow && !piece.hasMoved && piece.pieceType == PieceType.ROOK) {
@@ -81,7 +79,6 @@ public class King extends Piece {
                             return true;
                         }
                     }
-
                 }
             }
         }
