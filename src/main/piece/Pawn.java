@@ -5,14 +5,14 @@ import src.main.LastMove;
 import src.main.PieceType;
 
 public class Pawn extends Piece {
-    int moveDirection;
+    private int moveDirection;
     public Pawn(int color, int col, int row) {
         super(color, col, row);
         pieceType = PieceType.PAWN;
 
         switch(color) {
-            case GamePanel.WHITE: image = getImage("/res/piece/white_pawn"); moveDirection = 1; if(row!= 6) {hasMoved = true;} break;
-            case GamePanel.BLACK: image = getImage("/res/piece/black_pawn"); moveDirection = -1; if(row!= 1) {hasMoved = true;}break;
+            case GamePanel.WHITE: image = getImage("/res/piece/white_pawn"); moveDirection = -1; if(row!= 6) {hasMoved = true;} break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_pawn"); moveDirection = 1; if(row!= 1) {hasMoved = true;}break;
             default: break;
             }
     }
@@ -29,7 +29,7 @@ public class Pawn extends Piece {
         }
         else {
             if (hittingP.color != this.color) {
-                if(Math.abs(targetCol-preCol) == 1 && targetRow == preRow - moveDirection) {
+                if(Math.abs(targetCol-preCol) == 1 && targetRow == preRow + moveDirection) {
                     return true;
                 }
             }
@@ -45,8 +45,8 @@ public class Pawn extends Piece {
 
         if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
             // Movement
-            if (preRow - targetRow == moveDirection ||
-                preRow - targetRow == 2*moveDirection && !hasMoved) {
+            if (targetRow - preRow == moveDirection ||
+                targetRow - preRow == 2*moveDirection && !hasMoved) {
                 if (isValidSquare(targetCol, targetRow) && !pieceIsOnStraightLine(targetCol, targetRow)) {
                     return true;
                 }
@@ -68,7 +68,7 @@ public class Pawn extends Piece {
 
     @Override
     public boolean controlSquare(int targetCol, int targetRow) {
-        if (Math.abs(targetCol - preCol) == 1 && targetRow == preRow - moveDirection) {
+        if (Math.abs(targetCol - preCol) == 1 && targetRow == preRow + moveDirection) {
             return true;
         }
         return false;
