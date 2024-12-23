@@ -16,6 +16,15 @@ public class Queen extends Piece {
     }
 
     @Override
+    public Piece clone() {
+        Queen newQueen = new Queen(color, col, row);
+        if (hasMoved) {
+            newQueen.hasMoved = true;
+        }
+        return newQueen;
+    }
+
+    @Override
     public boolean canMove(int targetCol, int targetRow) {
         if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
             // Rook move

@@ -16,6 +16,15 @@ public class King extends Piece {
         }
     }
 
+    @Override
+    public Piece clone() {
+        King newKing = new King(color, col, row);
+        if (hasMoved) {
+            newKing.hasMoved = true;
+        }
+        return newKing;
+    }
+
 
     private boolean enemyPieceControlCastlingLine(int targetCol, int targetRow) {
         // When this piece moves left/right

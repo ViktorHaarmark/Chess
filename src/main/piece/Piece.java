@@ -10,7 +10,7 @@ import src.main.Board;
 import src.main.GamePanel;
 import src.main.Enums.PieceType;
 
-public class Piece {
+public abstract class Piece {
     public PieceType pieceType;
     public BufferedImage image;
     public int x, y;
@@ -75,13 +75,12 @@ public class Piece {
         y = getY(row);
     }
 
-    public boolean canMove(int targetCol, int targetRow) {
-        return false;
-    }
+    public abstract Piece clone();
 
-    public boolean controlSquare( int targetCol, int targetRow) {
-        return false;
-    }
+    public abstract boolean canMove(int targetCol, int targetRow);
+    
+
+    public abstract boolean controlSquare( int targetCol, int targetRow);
 
     public boolean isWithinBoard(int targetCol, int targetRow) {
         if (targetCol >= 0 && targetCol <= 7 && targetRow >= 0 && targetRow <= 7) {

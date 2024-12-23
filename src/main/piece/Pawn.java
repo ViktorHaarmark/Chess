@@ -17,6 +17,15 @@ public class Pawn extends Piece {
     }
 
     @Override
+    public Piece clone() {
+        Pawn newPawn = new Pawn(color, col, row);
+        if (hasMoved) {
+            newPawn.hasMoved = true;
+        }
+        return newPawn;
+    }
+
+    @Override
     public boolean isValidSquare(int targetCol, int targetRow) {
 
         hittingP = getHittingP(targetCol, targetRow);

@@ -8,7 +8,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import src.main.Enums.PieceType;
@@ -26,18 +28,20 @@ public class GamePanel extends JPanel implements Runnable{
     Thread gameThread;
     Board board = new Board();
     Mouse mouse = new Mouse();
+    JButton button = ButtonFactory.createGameButton("Click Me", ButtonFactory.takeback);
+
 
     // Pieces
-    public static ArrayList<Piece> pieces = new ArrayList<>();
-    public static ArrayList<Piece> simPieces = new ArrayList<>();
-    ArrayList<Piece> promoPieces = new ArrayList<>();
-    Piece activeP;
+    public static List<Piece> pieces = new ArrayList<>();
+    public static List<Piece> simPieces = new ArrayList<>();
+    private static ArrayList<Piece> promoPieces = new ArrayList<>();
+    private static Piece activeP;
     public static Piece castlingP;
 
     // Color
     public static final int WHITE = -1;
     public static final int BLACK = 1;
-    int currentColor = WHITE;
+    public static int currentColor = WHITE;
 
     // Booleans
     boolean canMove;
@@ -45,15 +49,22 @@ public class GamePanel extends JPanel implements Runnable{
     boolean promotion;
     boolean checkmate;
     boolean draw;
-    
+
+    //  Move list
+    public static List<Move> moveList = new ArrayList<>();
     public static Move lastMove = new Move();
 
 
+
     public GamePanel() {
+        setLayout(null);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(Color.black);
         addMouseMotionListener(mouse);
         addMouseListener(mouse);
+
+        button.setBounds(850, 700, 200, 40);
+        add(button);
 
         BoardSetup.setPieces(pieces);
         copyPieces(pieces, simPieces);
@@ -64,7 +75,7 @@ public class GamePanel extends JPanel implements Runnable{
         gameThread.start();
     }
 
-    private void copyPieces(ArrayList<Piece> source, ArrayList<Piece> target) {
+    public static void copyPieces(List<Piece> source, List<Piece> target) {
         target.clear();
         for (int i = 0; i < source.size(); i++) {
             target.add(source.get(i));
@@ -162,6 +173,7 @@ public class GamePanel extends JPanel implements Runnable{
         if(activeP.canMove(activeP.col, activeP.row) ) {
             // If taking a piece, remove it from the board
             if (activeP.hittingP != null) {
+                lastMove.capturedPiece = activeP.hittingP.clone();
                 simPieces.remove(activeP.hittingP.getIndex());
             }
 
@@ -173,15 +185,16 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
 
-    @SuppressWarnings("static-access")
     private void makeMove() {
         // Update the piece list if something is being captured
         copyPieces(simPieces, pieces);
 
-        // move the piece
+        // Save the move
         lastMove.col = activeP.col; lastMove.row = activeP.row; lastMove.preCol = activeP.preCol; lastMove.preRow = activeP.preRow;
         lastMove.pieceType = activeP.pieceType;
+        moveList.add(new Move(lastMove.col, lastMove.row, lastMove.preCol, lastMove.preRow, lastMove.pieceType, lastMove.capturedPiece));
 
+        // move the piece
         doCastling();
         activeP.updatePosition();
         activeP.hasMoved = true;
@@ -314,7 +327,7 @@ public class GamePanel extends JPanel implements Runnable{
     }
     
 
-     private void changePlayer() {
+     public static void changePlayer() {
         currentColor = currentColor * (-1);
         activeP = null;
     }
@@ -328,7 +341,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Board
         board.draw(g2);
 
-        if (!(lastMove.preCol == lastMove.col && lastMove.preRow == lastMove.row) ) {
+        if (!(lastMove.preCol == lastMove.col && lastMove.preRow == lastMove.row) ) { //if there is a real last move
             g2.setColor(Color.blue);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
             g2.fillRect(lastMove.col*Board.SQUARE_SIZE, lastMove.row*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
@@ -364,8 +377,8 @@ public class GamePanel extends JPanel implements Runnable{
             activeP.draw(g2);
         }
 
-
         //Status message
+
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setFont(new Font("Book Antiqua", Font.PLAIN, 40));
         g2.setColor(Color.WHITE);

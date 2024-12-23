@@ -14,6 +14,15 @@ public class Knight extends Piece {
             }
     }
 
+    @Override
+    public Piece clone() {
+        Knight newKnight = new Knight(color, col, row);
+        if (hasMoved) {
+            newKnight.hasMoved = true;
+        }
+        return newKnight;
+    }
+
     public boolean canMove(int targetCol, int targetRow) {
         if (isWithinBoard(targetCol, targetRow)) {
             if (Math.abs(targetCol - preCol) == 2 && Math.abs(targetRow - preRow) == 1 ||
