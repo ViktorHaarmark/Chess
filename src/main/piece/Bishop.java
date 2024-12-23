@@ -1,7 +1,7 @@
 package src.main.piece;
 
 import src.main.GamePanel;
-import src.main.PieceType;
+import src.main.Enums.PieceType;
 
 public class Bishop extends Piece {
     public Bishop(int color, int col, int row) {

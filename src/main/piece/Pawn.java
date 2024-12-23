@@ -1,8 +1,7 @@
 package src.main.piece;
 
 import src.main.GamePanel;
-import src.main.LastMove;
-import src.main.PieceType;
+import src.main.Enums.PieceType;
 
 public class Pawn extends Piece {
     private int moveDirection;
@@ -52,17 +51,17 @@ public class Pawn extends Piece {
                 }
             }
 
-            if(LastMove.pieceType == PieceType.PAWN && Math.abs(LastMove.preRow - LastMove.row) == 2) {
-                if (targetCol == LastMove.col && targetRow == (LastMove.preRow+LastMove.row)/2) {
+            if(GamePanel.lastMove.pieceType == PieceType.PAWN && Math.abs(GamePanel.lastMove.preRow - GamePanel.lastMove.row) == 2) {
+                if (targetCol == GamePanel.lastMove.col && targetRow == (GamePanel.lastMove.preRow+GamePanel.lastMove.row)/2) {
                     for (Piece piece : GamePanel.simPieces) {
-                        if (piece.col == LastMove.col && piece.row == LastMove.row) {
+                        if (piece.col == GamePanel.lastMove.col && piece.row == GamePanel.lastMove.row) {
                             this.hittingP = piece;
                             return true;
                         }
                     }
                 }
             }
-        }     
+        }
     return false;
     }
 

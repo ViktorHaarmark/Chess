@@ -11,10 +11,9 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import src.main.Enums.PieceType;
 import src.main.piece.Bishop;
-import src.main.piece.King;
 import src.main.piece.Knight;
-import src.main.piece.Pawn;
 import src.main.piece.Piece;
 import src.main.piece.Queen;
 import src.main.piece.Rook;
@@ -47,7 +46,7 @@ public class GamePanel extends JPanel implements Runnable{
     boolean checkmate;
     boolean draw;
     
-    public static LastMove lastMove = new LastMove();
+    public static Move lastMove = new Move();
 
 
     public GamePanel() {
@@ -56,74 +55,13 @@ public class GamePanel extends JPanel implements Runnable{
         addMouseMotionListener(mouse);
         addMouseListener(mouse);
 
-        setPiecesCheckmate();
+        BoardSetup.setPieces(pieces);
         copyPieces(pieces, simPieces);
     }
 
     public void launchGame() {
         gameThread = new Thread(this);
         gameThread.start();
-    }
-
-    /**
-     * 
-     */
-    public void setPieces() {
-
-        // White pieces
-        pieces.add(new Pawn(WHITE, 0, 6));
-        pieces.add(new Pawn(WHITE, 1, 6));
-        pieces.add(new Pawn(WHITE, 2, 6));
-        pieces.add(new Pawn(WHITE, 3, 6));
-        pieces.add(new Pawn(WHITE, 4, 6));
-        pieces.add(new Pawn(WHITE, 5, 6));
-        pieces.add(new Pawn(WHITE, 6, 6));
-        pieces.add(new Pawn(WHITE, 7, 6));
-        pieces.add(new Rook(WHITE, 0, 7));
-        pieces.add(new Rook(WHITE, 7, 7));
-        pieces.add(new Knight(WHITE, 1, 7));
-        pieces.add(new Knight(WHITE, 6, 7));
-        pieces.add(new Bishop(WHITE, 2, 7));
-        pieces.add(new Bishop(WHITE, 5, 7));
-        pieces.add(new Queen(WHITE, 3, 7));
-        pieces.add(new King(WHITE, 4, 7));
-
-        // Black pieces
-        pieces.add(new Pawn(BLACK, 0, 1));
-        pieces.add(new Pawn(BLACK, 1, 1));
-        pieces.add(new Pawn(BLACK, 2, 1));
-        pieces.add(new Pawn(BLACK, 3, 1));
-        pieces.add(new Pawn(BLACK, 4, 1));
-        pieces.add(new Pawn(BLACK, 5, 1));
-        pieces.add(new Rook(BLACK, 6, 1));
-        pieces.add(new Pawn(BLACK, 7, 1));
-        pieces.add(new Rook(BLACK, 0, 0));
-        pieces.add(new Rook(BLACK, 7, 0));
-        pieces.add(new Knight(BLACK, 1, 0));
-        pieces.add(new Knight(BLACK, 6, 0));
-        pieces.add(new Bishop(BLACK, 2, 0));
-        pieces.add(new Bishop(BLACK, 5, 0));
-        pieces.add(new Queen(BLACK, 3, 0));
-        pieces.add(new King(BLACK, 4, 0));
-  
-    }
-
-    public void setPiecesCheckmate() {
-        pieces.add(new Queen(WHITE, 0, 6));
-        pieces.add(new King(WHITE, 1, 5));
-        pieces.add(new King(BLACK, 2, 7));
-
-    }
-
-    public void setPiecesTestCastling() {
-        pieces.add(new King(WHITE, 4, 7));
-        pieces.add(new King(BLACK, 4, 0));
-        pieces.add(new Rook(BLACK, 0, 0));
-        pieces.add(new Rook(BLACK, 7, 0));
-        pieces.add(new Rook(BLACK, 4, 0));
-        pieces.add(new Rook(WHITE, 0, 7));
-        pieces.add(new Rook(WHITE, 7, 7));
-
     }
 
     private void copyPieces(ArrayList<Piece> source, ArrayList<Piece> target) {
@@ -162,12 +100,12 @@ public class GamePanel extends JPanel implements Runnable{
             promoting();
         }
 
-        if (checkmate) {
-            System.out.println("checkmate!");
+        else if (checkmate) {
+            
         }
 
-        if (draw) {
-            System.out.println("Draw");
+        else if (draw) {
+            
         }
         
         else{
@@ -235,13 +173,14 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
 
+    @SuppressWarnings("static-access")
     private void makeMove() {
         // Update the piece list if something is being captured
         copyPieces(simPieces, pieces);
 
         // move the piece
-        LastMove.col = activeP.col; LastMove.row = activeP.row; LastMove.preCol = activeP.preCol; LastMove.preRow = activeP.preRow;
-        LastMove.pieceType = activeP.pieceType;
+        lastMove.col = activeP.col; lastMove.row = activeP.row; lastMove.preCol = activeP.preCol; lastMove.preRow = activeP.preRow;
+        lastMove.pieceType = activeP.pieceType;
 
         doCastling();
         activeP.updatePosition();
@@ -251,11 +190,11 @@ public class GamePanel extends JPanel implements Runnable{
             promotion = true;
         }
 
-        if(isCheckmate(currentColor * (-1))) {
+        else if(isCheckmate(currentColor * (-1))) {
             checkmate = true;
         }
 
-        if(isStalemate(currentColor * (-1))) {
+        else if(isStalemate(currentColor * (-1))) {
             draw = true;
         }
 
@@ -316,7 +255,7 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
 
-    public boolean isStalemate(int color) { //Missing implementation
+    private boolean isStalemate(int color) { //Missing implementation
         if (!isKingInCheck(color)) {
             if (!isLegalMovePossible(color)) {
                 return true;
@@ -371,7 +310,6 @@ public class GamePanel extends JPanel implements Runnable{
                     changePlayer();
                 }
             }
-
         }
     }
     
@@ -390,11 +328,11 @@ public class GamePanel extends JPanel implements Runnable{
         // Board
         board.draw(g2);
 
-        if (!(LastMove.preCol == LastMove.col && LastMove.preRow == LastMove.row) ) {
+        if (!(lastMove.preCol == lastMove.col && lastMove.preRow == lastMove.row) ) {
             g2.setColor(Color.blue);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-            g2.fillRect(LastMove.col*Board.SQUARE_SIZE, LastMove.row*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
-            g2.fillRect(LastMove.preCol*Board.SQUARE_SIZE, LastMove.preRow*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
+            g2.fillRect(lastMove.col*Board.SQUARE_SIZE, lastMove.row*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
+            g2.fillRect(lastMove.preCol*Board.SQUARE_SIZE, lastMove.preRow*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }
 
@@ -437,6 +375,15 @@ public class GamePanel extends JPanel implements Runnable{
             for (Piece piece : promoPieces) {
                 g2.drawImage(piece.image, piece.getX(piece.col), piece.getY(piece.row),
                     Board.SQUARE_SIZE, Board.SQUARE_SIZE, null);
+            }
+        }
+        else if (checkmate) {
+            g2.drawString("Checkmate!", 840, 200);
+            if (currentColor == GamePanel.WHITE){ //Implement using string.replace to find the correct string
+                g2.drawString("White won!", 840, 300);
+            }
+            else {
+                g2.drawString("Black won!", 840, 300);
             }
         }
         else {

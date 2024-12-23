@@ -1,7 +1,7 @@
 package src.main.piece;
 
 import src.main.GamePanel;
-import src.main.PieceType;
+import src.main.Enums.PieceType;
 
 public class Rook extends Piece {
     public Rook(int color, int col, int row) {

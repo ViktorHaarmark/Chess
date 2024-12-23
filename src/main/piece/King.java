@@ -1,7 +1,7 @@
 package src.main.piece;
 
 import src.main.GamePanel;
-import src.main.PieceType;
+import src.main.Enums.PieceType;
 
 public class King extends Piece {
 
@@ -28,7 +28,7 @@ public class King extends Piece {
         }
         return false;
     }
-
+    
     
     private boolean pieceIsOnCastlingLine(int targetCol, int targetRow) {
         // When the king checks for castling, he does not consider himself in the way.

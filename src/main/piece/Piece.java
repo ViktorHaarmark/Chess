@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 import src.main.Board;
 import src.main.GamePanel;
-import src.main.PieceType;
+import src.main.Enums.PieceType;
 
 public class Piece {
     public PieceType pieceType;
