@@ -10,8 +10,8 @@ public class King extends Piece {
         pieceType = PieceType.KING;
 
         switch(color) {
-            case GamePanel.WHITE: image = getImage("/res/piece/white_king"); if(row != 7 || col != 4) {hasMoved = true;} break;
-            case GamePanel.BLACK: image = getImage("/res/piece/black_king"); if(row != 0 || col != 4) {hasMoved = true;} break;
+            case GamePanel.WHITE: image = getImage("/res/piece/white_king"); break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_king"); break;
             default: break;
         }
     }
@@ -19,9 +19,6 @@ public class King extends Piece {
     @Override
     public Piece clone() {
         King newKing = new King(color, col, row);
-        if (hasMoved) {
-            newKing.hasMoved = true;
-        }
         return newKing;
     }
 
@@ -67,9 +64,11 @@ public class King extends Piece {
             if (targetCol == preCol + 2 && targetRow == preRow && !pieceIsOnCastlingLine(7, targetRow)) {
                 if (!enemyPieceControlCastlingLine(targetCol, targetRow)) {
                     for (Piece piece : GamePanel.simPieces) {
-                        if (piece.col == preCol + 3 && piece.row == preRow && !piece.hasMoved && piece.pieceType == PieceType.ROOK) {
-                            GamePanel.castlingP = piece;
-                            return true;
+                        if (piece.col == preCol + 3 && piece.row == preRow && piece.pieceType == PieceType.ROOK) {
+                            if(piece.color == GamePanel.WHITE && GamePanel.lastMove.whiteKingsideCastle || piece.color == GamePanel.BLACK && GamePanel.lastMove.blackKingsideCastle) {
+                                GamePanel.castlingP = piece;
+                                return true;
+                            }
                         }
                     }
                 }
@@ -79,9 +78,11 @@ public class King extends Piece {
             if (targetCol == preCol - 2 && targetRow == preRow && !pieceIsOnCastlingLine(0, targetRow) ) {
                 if (!enemyPieceControlCastlingLine(targetCol, targetRow) ) {
                     for (Piece piece : GamePanel.simPieces) {
-                        if (piece.col == 0 && piece.row == preRow && !piece.hasMoved && piece.pieceType == PieceType.ROOK) {
-                            GamePanel.castlingP = piece;
-                            return true;
+                        if (piece.col == 0 && piece.row == preRow && piece.pieceType == PieceType.ROOK) {
+                            if(piece.color == GamePanel.WHITE && GamePanel.lastMove.whiteQueensideCastle || piece.color == GamePanel.BLACK && GamePanel.lastMove.blackQueensideCastle) {
+                                GamePanel.castlingP = piece;
+                                return true;
+                            }
                         }
                     }
                 }

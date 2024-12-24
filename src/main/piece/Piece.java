@@ -17,7 +17,6 @@ public abstract class Piece {
     public int col, row, preCol, preRow;
     public int color;
     public Piece hittingP;
-    public boolean hasMoved;
 
     public Piece(int color, int col, int row) {
         this.color = color;

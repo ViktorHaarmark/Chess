@@ -18,9 +18,6 @@ public class Queen extends Piece {
     @Override
     public Piece clone() {
         Queen newQueen = new Queen(color, col, row);
-        if (hasMoved) {
-            newQueen.hasMoved = true;
-        }
         return newQueen;
     }
 

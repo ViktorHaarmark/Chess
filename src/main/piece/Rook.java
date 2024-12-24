@@ -9,8 +9,8 @@ public class Rook extends Piece {
         pieceType = PieceType.ROOK;
 
         switch(color) {
-            case GamePanel.WHITE: image = getImage("/res/piece/white_rook"); if (row != 7 || col%7 != 0) {hasMoved = true;} break;
-            case GamePanel.BLACK: image = getImage("/res/piece/black_rook"); if (row != 0 || col%7 != 0) {hasMoved = true;} break;
+            case GamePanel.WHITE: image = getImage("/res/piece/white_rook"); break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_rook"); break;
             default: break;
             }
     }
@@ -18,9 +18,6 @@ public class Rook extends Piece {
     @Override
     public Piece clone() {
         Rook newRook = new Rook(color, col, row);
-        if (hasMoved) {
-            newRook.hasMoved = true;
-        }
         return newRook;
     }
 

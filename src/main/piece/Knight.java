@@ -17,9 +17,6 @@ public class Knight extends Piece {
     @Override
     public Piece clone() {
         Knight newKnight = new Knight(color, col, row);
-        if (hasMoved) {
-            newKnight.hasMoved = true;
-        }
         return newKnight;
     }
 

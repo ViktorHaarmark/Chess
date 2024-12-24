@@ -10,8 +10,8 @@ public class Pawn extends Piece {
         pieceType = PieceType.PAWN;
 
         switch(color) {
-            case GamePanel.WHITE: image = getImage("/res/piece/white_pawn"); moveDirection = -1; if(row!= 6) {hasMoved = true;} break;
-            case GamePanel.BLACK: image = getImage("/res/piece/black_pawn"); moveDirection = 1; if(row!= 1) {hasMoved = true;}break;
+            case GamePanel.WHITE: image = getImage("/res/piece/white_pawn"); moveDirection = -1; break;
+            case GamePanel.BLACK: image = getImage("/res/piece/black_pawn"); moveDirection = 1; break;
             default: break;
             }
     }
@@ -19,9 +19,6 @@ public class Pawn extends Piece {
     @Override
     public Piece clone() {
         Pawn newPawn = new Pawn(color, col, row);
-        if (hasMoved) {
-            newPawn.hasMoved = true;
-        }
         return newPawn;
     }
 
@@ -48,13 +45,17 @@ public class Pawn extends Piece {
         return false;
     }
 
+    private boolean canMoveTwoSquares() {
+        return (preRow == 1 || preRow == 6);
+    }
+
     @Override
     public boolean canMove(int targetCol, int targetRow) {
 
         if (isWithinBoard(targetCol, targetRow) && !isSameSquare(targetCol, targetRow)) {
             // Movement
             if (targetRow - preRow == moveDirection ||
-                targetRow - preRow == 2*moveDirection && !hasMoved) {
+                targetRow - preRow == 2*moveDirection && canMoveTwoSquares()) {
                 if (isValidSquare(targetCol, targetRow) && !pieceIsOnStraightLine(targetCol, targetRow)) {
                     return true;
                 }

@@ -28,7 +28,8 @@ public class GamePanel extends JPanel implements Runnable{
     Thread gameThread;
     Board board = new Board();
     Mouse mouse = new Mouse();
-    JButton button = ButtonFactory.createGameButton("Click Me", ButtonFactory.takeback);
+    JButton takebackButton = ButtonFactory.createGameButton("Takeback", ButtonFactory.takeback);
+    JButton newGameButton = ButtonFactory.createGameButton("New Game", ButtonFactory.newGame);
 
 
     // Pieces
@@ -36,6 +37,8 @@ public class GamePanel extends JPanel implements Runnable{
     public static List<Piece> simPieces = new ArrayList<>();
     private static ArrayList<Piece> promoPieces = new ArrayList<>();
     private static Piece activeP;
+
+    // Castling constants
     public static Piece castlingP;
 
     // Color
@@ -63,9 +66,14 @@ public class GamePanel extends JPanel implements Runnable{
         addMouseMotionListener(mouse);
         addMouseListener(mouse);
 
-        button.setBounds(850, 700, 200, 40);
-        add(button);
+        // Buttons
+        newGameButton.setBounds(850, 600, 200, 40);
+        add(newGameButton);
 
+        takebackButton.setBounds(850, 700, 200, 40);
+        add(takebackButton);
+
+        // Setup the pieces
         BoardSetup.setPieces(pieces);
         copyPieces(pieces, simPieces);
     }
@@ -180,7 +188,7 @@ public class GamePanel extends JPanel implements Runnable{
             if(!isKingInCheck(activeP.color)) {
                 canMove = true;
     
-                validSquare = true;
+                validSquare = true; //are these always the same value
             }
         }
     }
@@ -189,15 +197,17 @@ public class GamePanel extends JPanel implements Runnable{
         // Update the piece list if something is being captured
         copyPieces(simPieces, pieces);
 
+        removeCastlingRights();
+
+        doCastling();
         // Save the move
         lastMove.col = activeP.col; lastMove.row = activeP.row; lastMove.preCol = activeP.preCol; lastMove.preRow = activeP.preRow;
         lastMove.pieceType = activeP.pieceType;
-        moveList.add(new Move(lastMove.col, lastMove.row, lastMove.preCol, lastMove.preRow, lastMove.pieceType, lastMove.capturedPiece));
+        moveList.add(new Move(lastMove.col, lastMove.row, lastMove.preCol, lastMove.preRow, lastMove.pieceType, lastMove.capturedPiece,
+            lastMove.whiteKingsideCastle, lastMove.whiteQueensideCastle, lastMove.blackKingsideCastle, lastMove.blackQueensideCastle));
 
         // move the piece
-        doCastling();
         activeP.updatePosition();
-        activeP.hasMoved = true;
 
         if(canPromote()) {
             promotion = true;
@@ -216,16 +226,33 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
 
+    private void removeCastlingRights() {
+        if (activeP.pieceType == PieceType.KING) {
+            switch (currentColor) {
+                case GamePanel.WHITE: lastMove.whiteQueensideCastle = false; lastMove.whiteKingsideCastle = false; break;
+                case GamePanel.BLACK: lastMove.blackQueensideCastle = false; lastMove.blackKingsideCastle = false; break;
+            }
+        }
+        if (activeP.pieceType == PieceType.ROOK) {
+            switch (activeP.color) {
+                case GamePanel.WHITE: if (activeP.preRow == 7) {if (activeP.preCol == 0) {lastMove.whiteQueensideCastle = false;} else if (activeP.preCol == 7) {lastMove.whiteKingsideCastle = false;}}; break; 
+                case GamePanel.BLACK: if (activeP.preRow == 0) {if (activeP.preCol == 0) {lastMove.blackQueensideCastle = false;} else if (activeP.preCol == 7) {lastMove.blackKingsideCastle = false;}}; break; 
+            }
+        }
+    }
+
     private void doCastling() {
         if (castlingP != null) {
             if (castlingP.col == 0) {
                 castlingP.col = 3;
+                lastMove.castlingDirection = -1;
             }
             if (castlingP.col == 7) {
                 castlingP.col = 5;
+                lastMove.castlingDirection = 1;
             }
             castlingP.x = castlingP.getX(castlingP.col);
-            castlingP.hasMoved = true;
+            //castlingP.hasMoved = true;
             castlingP.updatePosition();
         }
     }
