@@ -13,15 +13,15 @@ public class ButtonFactory {
 
     public static ActionListener takeback = e -> {
         System.out.println("Takeback almost implemented!");
-        GamePanel.lastMove.undo();
+        GamePanel.lastMove().undo();
     };
 
     public static ActionListener newGame = e -> { //BLUNDER, expcedted problem is castling implementation of undo
         if (GamePanel.moveList.size() > 1) {
             while (GamePanel.moveList.size() > 1) {
-                GamePanel.lastMove.undo();
+                GamePanel.lastMove().undo();
             }
-            GamePanel.lastMove.undo();
+            GamePanel.lastMove().undo();
         };
     };
 }

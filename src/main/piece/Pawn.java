@@ -61,10 +61,10 @@ public class Pawn extends Piece {
                 }
             }
 
-            if(GamePanel.lastMove.pieceType == PieceType.PAWN && Math.abs(GamePanel.lastMove.preRow - GamePanel.lastMove.row) == 2) {
-                if (targetCol == GamePanel.lastMove.col && targetRow == (GamePanel.lastMove.preRow+GamePanel.lastMove.row)/2) {
+            if(GamePanel.lastMove().pieceType == PieceType.PAWN && Math.abs(GamePanel.lastMove().preRow - GamePanel.lastMove().row) == 2) {
+                if (targetCol == GamePanel.lastMove().col && targetRow == (GamePanel.lastMove().preRow+GamePanel.lastMove().row)/2) {
                     for (Piece piece : GamePanel.simPieces) {
-                        if (piece.col == GamePanel.lastMove.col && piece.row == GamePanel.lastMove.row) {
+                        if (piece.col == GamePanel.lastMove().col && piece.row == GamePanel.lastMove().row) {
                             this.hittingP = piece;
                             return true;
                         }

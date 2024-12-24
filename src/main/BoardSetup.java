@@ -65,7 +65,8 @@ public class BoardSetup {
         pieceList.add(new King(GamePanel.BLACK, 4, 0));
         pieceList.add(new Rook(GamePanel.BLACK, 0, 0));
         pieceList.add(new Rook(GamePanel.BLACK, 7, 0));
-        pieceList.add(new Rook(GamePanel.BLACK, 4, 0));
+        pieceList.add(new Rook(GamePanel.WHITE, 4, 4));
+        pieceList.add(new Pawn(GamePanel.BLACK, 4, 3));
         pieceList.add(new Rook(GamePanel.WHITE, 0, 7));
         pieceList.add(new Rook(GamePanel.WHITE, 7, 7));
 

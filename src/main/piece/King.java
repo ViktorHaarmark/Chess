@@ -61,11 +61,11 @@ public class King extends Piece {
             }
         
             // Kingside castling
-            if (targetCol == preCol + 2 && targetRow == preRow && !pieceIsOnCastlingLine(7, targetRow)) {
+            if (targetCol == preCol + 2 && targetRow == preRow && !pieceIsOnCastlingLine(7, targetRow) && !GamePanel.wasKingInCheck(color)) {
                 if (!enemyPieceControlCastlingLine(targetCol, targetRow)) {
                     for (Piece piece : GamePanel.simPieces) {
                         if (piece.col == preCol + 3 && piece.row == preRow && piece.pieceType == PieceType.ROOK) {
-                            if(piece.color == GamePanel.WHITE && GamePanel.lastMove.whiteKingsideCastle || piece.color == GamePanel.BLACK && GamePanel.lastMove.blackKingsideCastle) {
+                            if(piece.color == GamePanel.WHITE && GamePanel.lastMove().whiteKingsideCastle || piece.color == GamePanel.BLACK && GamePanel.lastMove().blackKingsideCastle) {
                                 GamePanel.castlingP = piece;
                                 return true;
                             }
@@ -75,11 +75,11 @@ public class King extends Piece {
             }
 
             // Queenside castling
-            if (targetCol == preCol - 2 && targetRow == preRow && !pieceIsOnCastlingLine(0, targetRow) ) {
+            if (targetCol == preCol - 2 && targetRow == preRow && !pieceIsOnCastlingLine(0, targetRow) && !GamePanel.wasKingInCheck(color) ) {
                 if (!enemyPieceControlCastlingLine(targetCol, targetRow) ) {
                     for (Piece piece : GamePanel.simPieces) {
                         if (piece.col == 0 && piece.row == preRow && piece.pieceType == PieceType.ROOK) {
-                            if(piece.color == GamePanel.WHITE && GamePanel.lastMove.whiteQueensideCastle || piece.color == GamePanel.BLACK && GamePanel.lastMove.blackQueensideCastle) {
+                            if(piece.color == GamePanel.WHITE && GamePanel.lastMove().whiteQueensideCastle || piece.color == GamePanel.BLACK && GamePanel.lastMove().blackQueensideCastle) {
                                 GamePanel.castlingP = piece;
                                 return true;
                             }

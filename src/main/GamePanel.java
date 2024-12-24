@@ -55,9 +55,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     //  Move list
     public static List<Move> moveList = new ArrayList<>();
-    public static Move lastMove = new Move();
-
-
+    public static Move currentMove = new Move();
 
     public GamePanel() {
         setLayout(null);
@@ -74,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable{
         add(takebackButton);
 
         // Setup the pieces
-        BoardSetup.setPieces(pieces);
+        BoardSetup.castlingTest(pieces);
         copyPieces(pieces, simPieces);
     }
 
@@ -109,7 +107,6 @@ public class GamePanel extends JPanel implements Runnable{
                 repaint();
                 delta--;
             }
-
         }
     }
 
@@ -181,7 +178,7 @@ public class GamePanel extends JPanel implements Runnable{
         if(activeP.canMove(activeP.col, activeP.row) ) {
             // If taking a piece, remove it from the board
             if (activeP.hittingP != null) {
-                lastMove.capturedPiece = activeP.hittingP.clone();
+                currentMove.capturedPiece = activeP.hittingP.clone();
                 simPieces.remove(activeP.hittingP.getIndex());
             }
 
@@ -193,6 +190,13 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
 
+    public static Move lastMove() {
+        if (moveList.size() == 0) {
+            return new Move();
+        }
+        return moveList.getLast();
+    }
+
     private void makeMove() {
         // Update the piece list if something is being captured
         copyPieces(simPieces, pieces);
@@ -201,10 +205,11 @@ public class GamePanel extends JPanel implements Runnable{
 
         doCastling();
         // Save the move
-        lastMove.col = activeP.col; lastMove.row = activeP.row; lastMove.preCol = activeP.preCol; lastMove.preRow = activeP.preRow;
-        lastMove.pieceType = activeP.pieceType;
-        moveList.add(new Move(lastMove.col, lastMove.row, lastMove.preCol, lastMove.preRow, lastMove.pieceType, lastMove.capturedPiece,
-            lastMove.whiteKingsideCastle, lastMove.whiteQueensideCastle, lastMove.blackKingsideCastle, lastMove.blackQueensideCastle));
+        currentMove.col = activeP.col; currentMove.row = activeP.row; currentMove.preCol = activeP.preCol; currentMove.preRow = activeP.preRow;
+        currentMove.pieceType = activeP.pieceType;
+        moveList.add(new Move(currentMove.col, currentMove.row, currentMove.preCol, currentMove.preRow, currentMove.pieceType, currentMove.capturedPiece,
+            currentMove.castlingDirection, currentMove.whiteKingsideCastle, currentMove.whiteQueensideCastle, currentMove.blackKingsideCastle, currentMove.blackQueensideCastle));
+        currentMove = new Move(lastMove().whiteKingsideCastle, lastMove().whiteQueensideCastle, lastMove().blackKingsideCastle, lastMove().blackQueensideCastle);
 
         // move the piece
         activeP.updatePosition();
@@ -229,14 +234,14 @@ public class GamePanel extends JPanel implements Runnable{
     private void removeCastlingRights() {
         if (activeP.pieceType == PieceType.KING) {
             switch (currentColor) {
-                case GamePanel.WHITE: lastMove.whiteQueensideCastle = false; lastMove.whiteKingsideCastle = false; break;
-                case GamePanel.BLACK: lastMove.blackQueensideCastle = false; lastMove.blackKingsideCastle = false; break;
+                case GamePanel.WHITE: currentMove.whiteQueensideCastle = false; currentMove.whiteKingsideCastle = false; break;
+                case GamePanel.BLACK: currentMove.blackQueensideCastle = false; currentMove.blackKingsideCastle = false; break;
             }
         }
         if (activeP.pieceType == PieceType.ROOK) {
             switch (activeP.color) {
-                case GamePanel.WHITE: if (activeP.preRow == 7) {if (activeP.preCol == 0) {lastMove.whiteQueensideCastle = false;} else if (activeP.preCol == 7) {lastMove.whiteKingsideCastle = false;}}; break; 
-                case GamePanel.BLACK: if (activeP.preRow == 0) {if (activeP.preCol == 0) {lastMove.blackQueensideCastle = false;} else if (activeP.preCol == 7) {lastMove.blackKingsideCastle = false;}}; break; 
+                case GamePanel.WHITE: if (activeP.preRow == 7) {if (activeP.preCol == 0) {currentMove.whiteQueensideCastle = false;} else if (activeP.preCol == 7) {currentMove.whiteKingsideCastle = false;}}; break; 
+                case GamePanel.BLACK: if (activeP.preRow == 0) {if (activeP.preCol == 0) {currentMove.blackQueensideCastle = false;} else if (activeP.preCol == 7) {currentMove.blackKingsideCastle = false;}}; break; 
             }
         }
     }
@@ -245,11 +250,11 @@ public class GamePanel extends JPanel implements Runnable{
         if (castlingP != null) {
             if (castlingP.col == 0) {
                 castlingP.col = 3;
-                lastMove.castlingDirection = -1;
+                currentMove.castlingDirection = -1;
             }
             if (castlingP.col == 7) {
                 castlingP.col = 5;
-                lastMove.castlingDirection = 1;
+                currentMove.castlingDirection = 1;
             }
             castlingP.x = castlingP.getX(castlingP.col);
             //castlingP.hasMoved = true;
@@ -277,6 +282,19 @@ public class GamePanel extends JPanel implements Runnable{
             if (king.pieceType == PieceType.KING && king.color == color) {
                 for (Piece piece : GamePanel.simPieces) {
                     if (piece.controlSquare(king.col, king.row)  && piece.color != king.color) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean wasKingInCheck(int color) {
+        for (Piece king : GamePanel.simPieces) {
+            if (king.pieceType == PieceType.KING && king.color == color) {
+                for (Piece piece : GamePanel.simPieces) {
+                    if (piece.controlSquare(king.preCol, king.preRow)  && piece.color != king.color) {
                         return true;
                     }
                 }
@@ -345,6 +363,7 @@ public class GamePanel extends JPanel implements Runnable{
                     }
                     simPieces.remove(activeP.getIndex());
                     copyPieces(simPieces, pieces);
+                    moveList.getLast().promotion = true;
                     activeP = null;
                     promotion = false;
                     changePlayer();
@@ -368,11 +387,11 @@ public class GamePanel extends JPanel implements Runnable{
         // Board
         board.draw(g2);
 
-        if (!(lastMove.preCol == lastMove.col && lastMove.preRow == lastMove.row) ) { //if there is a real last move
+        if (!(lastMove().preCol == lastMove().col && lastMove().preRow == lastMove().row) ) { //if there is a real last move
             g2.setColor(Color.blue);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-            g2.fillRect(lastMove.col*Board.SQUARE_SIZE, lastMove.row*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
-            g2.fillRect(lastMove.preCol*Board.SQUARE_SIZE, lastMove.preRow*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
+            g2.fillRect(lastMove().col*Board.SQUARE_SIZE, lastMove().row*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
+            g2.fillRect(lastMove().preCol*Board.SQUARE_SIZE, lastMove().preRow*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }
 
