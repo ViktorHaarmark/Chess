@@ -72,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable{
         add(takebackButton);
 
         // Setup the pieces
-        BoardSetup.castlingTest(pieces);
+        BoardSetup.setPieces(pieces);
         copyPieces(pieces, simPieces);
     }
 
