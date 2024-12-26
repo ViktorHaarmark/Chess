@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import src.main.Board;
+import src.main.ChessBoard;
 import src.main.GamePanel;
 import src.main.Enums.PieceType;
 
@@ -36,19 +36,19 @@ public abstract class Piece {
     }
 
     public int getX(int col) {
-        return col * Board.SQUARE_SIZE;
+        return col * ChessBoard.SQUARE_SIZE;
     }
 
     public int getY(int row) {
-        return row * Board.SQUARE_SIZE;
+        return row * ChessBoard.SQUARE_SIZE;
     }
 
     public int getCol(int x) {
-        return (x+Board.HALF_SQUARE_SIZE)/(Board.SQUARE_SIZE);
+        return (x+ChessBoard.HALF_SQUARE_SIZE)/(ChessBoard.SQUARE_SIZE);
     }
 
     public int getRow(int x) {
-        return (y+Board.HALF_SQUARE_SIZE)/(Board.SQUARE_SIZE);
+        return (y+ChessBoard.HALF_SQUARE_SIZE)/(ChessBoard.SQUARE_SIZE);
     }
 
     public int getIndex() {
@@ -199,7 +199,7 @@ public abstract class Piece {
 
     public void draw(Graphics2D g2) {
 
-        g2.drawImage(image, x, y, Board.SQUARE_SIZE, Board.SQUARE_SIZE, null);
+        g2.drawImage(image, x, y, ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE, null);
 
     }
 

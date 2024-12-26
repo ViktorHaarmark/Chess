@@ -3,7 +3,7 @@ package src.main;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-public class Board {
+public class ChessBoard {
 
     final int MAX_COL = 8;
     final int MAX_ROW = 8;

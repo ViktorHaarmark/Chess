@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable{
     public static final int HEIGHT = 800;
     final int FPS = 60;
     Thread gameThread;
-    Board board = new Board();
+    ChessBoard board = new ChessBoard();
     Mouse mouse = new Mouse();
     JButton takebackButton = ButtonFactory.createGameButton("Takeback", ButtonFactory.takeback);
     JButton newGameButton = ButtonFactory.createGameButton("New Game", ButtonFactory.newGame);
@@ -72,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable{
         add(takebackButton);
 
         // Setup the pieces
-        BoardSetup.castlingTest(pieces);
+        BoardSetup.setPieces(pieces);
         copyPieces(pieces, simPieces);
     }
 
@@ -130,8 +130,8 @@ public class GamePanel extends JPanel implements Runnable{
                     // If there is no active piece, check if a piece can be picked up.
                     for (Piece piece : simPieces) {
                         if (piece.color == currentColor &&
-                            piece.col == mouse.x/Board.SQUARE_SIZE &&
-                            piece.row == mouse.y/Board.SQUARE_SIZE) {
+                            piece.col == mouse.x/ChessBoard.SQUARE_SIZE &&
+                            piece.row == mouse.y/ChessBoard.SQUARE_SIZE) {
                                 activeP = piece;
                         }
                     }
@@ -169,8 +169,8 @@ public class GamePanel extends JPanel implements Runnable{
         copyPieces(pieces, simPieces);
 
         // While a piece is being held, update the position
-        activeP.x = mouse.x - Board.HALF_SQUARE_SIZE;
-        activeP.y = mouse.y - Board.HALF_SQUARE_SIZE;
+        activeP.x = mouse.x - ChessBoard.HALF_SQUARE_SIZE;
+        activeP.y = mouse.y - ChessBoard.HALF_SQUARE_SIZE;
         activeP.col = activeP.getCol(activeP.x);
         activeP.row = activeP.getRow(activeP.y);
 
@@ -353,7 +353,7 @@ public class GamePanel extends JPanel implements Runnable{
     private void promoting() {
         if (mouse.pressed) {
             for (Piece piece : promoPieces) {
-                if(piece.col == mouse.x/Board.SQUARE_SIZE && piece.row == mouse.y/Board.SQUARE_SIZE) {
+                if(piece.col == mouse.x/ChessBoard.SQUARE_SIZE && piece.row == mouse.y/ChessBoard.SQUARE_SIZE) {
                     switch(piece.pieceType) {
                         case ROOK: simPieces.add(new Rook(currentColor, activeP.col, activeP.row)); break;
                         case KNIGHT: simPieces.add(new Knight(currentColor, activeP.col, activeP.row)); break;
@@ -390,8 +390,8 @@ public class GamePanel extends JPanel implements Runnable{
         if (!(lastMove().preCol == lastMove().col && lastMove().preRow == lastMove().row) ) { //if there is a real last move
             g2.setColor(Color.blue);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-            g2.fillRect(lastMove().col*Board.SQUARE_SIZE, lastMove().row*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
-            g2.fillRect(lastMove().preCol*Board.SQUARE_SIZE, lastMove().preRow*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
+            g2.fillRect(lastMove().col*ChessBoard.SQUARE_SIZE, lastMove().row*ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE);
+            g2.fillRect(lastMove().preCol*ChessBoard.SQUARE_SIZE, lastMove().preRow*ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }
 
@@ -401,7 +401,7 @@ public class GamePanel extends JPanel implements Runnable{
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
             for (Piece king : GamePanel.simPieces) {
                 if (king.pieceType == PieceType.KING && king.color == currentColor){
-                    g2.fillOval(king.preCol*Board.SQUARE_SIZE, king.preRow*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
+                    g2.fillOval(king.preCol*ChessBoard.SQUARE_SIZE, king.preRow*ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE);
                 }
             }
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
@@ -417,7 +417,7 @@ public class GamePanel extends JPanel implements Runnable{
             if (canMove) {
                 g2.setColor(Color.blue);
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-                g2.fillRect(activeP.col*Board.SQUARE_SIZE, activeP.row*Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
+                g2.fillRect(activeP.col*ChessBoard.SQUARE_SIZE, activeP.row*ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE);
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             }
             activeP.draw(g2);
@@ -433,7 +433,7 @@ public class GamePanel extends JPanel implements Runnable{
             g2.drawString("Promote to", 840, 200);
             for (Piece piece : promoPieces) {
                 g2.drawImage(piece.image, piece.getX(piece.col), piece.getY(piece.row),
-                    Board.SQUARE_SIZE, Board.SQUARE_SIZE, null);
+                    ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE, null);
             }
         }
         else if (checkmate) {
